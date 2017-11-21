@@ -1,13 +1,13 @@
 import zipfile
+from threading import Thread
 
 def extractFile(zFile, password):
     bpass = password.encode('utf-8')
     try:
         zFile.extractall(pwd=bpass)
-        return True
+        print('[+] Password = ' + password)
     except Exception as e:
-        return False
-
+        pass
 
 def main():
     zFile = zipfile.ZipFile("./evil.zip")
@@ -15,12 +15,9 @@ def main():
 
     for line in passFile.readlines():
         password = line.strip('\n')
-        extracted = extractFile(zFile, passowrd)
+        t = Thread(target=extractFile, args=(zFile, password))
 
-        if extracted:
-            print('[+] Password = ' + password + '\n')
-            exit(0)
-
+        t.start()
         
 if __name__ == '__main__':
     main()
